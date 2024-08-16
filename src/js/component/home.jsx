@@ -1,25 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Player } from "./Player";
+import { List } from "./List";
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+
 
 //create your first component
 const Home = () => {
+	const [listSong, setListSong] = useState([])
+	const [currentSongUrl, setCurrentSongUrl] = useState(null)
+	const [selectedSong, setSelectedSong] = useState(null)
+
+	const fetchSongs = async () => {
+		const res = await fetch(`https://playground.4geeks.com/sound/all`, {
+			method: 'GET',
+			headers: {
+				'Content-type': 'application/json'
+			}
+		})
+		if(res.ok){
+			const data = await res.json()
+			if(data.songs){
+				setListSong(data.songs)
+			}
+		}
+	}
+
+	useEffect(() => {
+		fetchSongs()
+	}, [])
+
+	const handleSongClick = (url, id) => {
+		setCurrentSongUrl(url)
+		setSelectedSong(id)
+	}
+
 	return (
-		<div className="text-center">
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
+		<>
+			<main className="main">
+				<ul>
+					{listSong.map((item, index) => {
+						return(
+							<List 
+							key={index} 
+							text={item.name} 
+							num={item.id}
+							onClick={() => handleSongClick(item.url, index)}
+							active={selectedSong === index}
+							/>
+						)
+					})}
+				</ul>
+			</main>
+			<footer className="footer">
+				<Player songUrl={currentSongUrl}/>
+			</footer>
+		</>
 	);
 };
 
