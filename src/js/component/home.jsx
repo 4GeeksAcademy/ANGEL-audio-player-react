@@ -8,6 +8,7 @@ import { List } from "./List";
 const Home = () => {
 	const [listSong, setListSong] = useState([])
 	const [currentSongUrl, setCurrentSongUrl] = useState(null)
+	const [currentSongName, setCurrentSongName] = useState(null)
 	const [selectedSong, setSelectedSong] = useState(null)
 
 	const fetchSongs = async () => {
@@ -29,9 +30,10 @@ const Home = () => {
 		fetchSongs()
 	}, [])
 
-	const handleSongClick = (url, id) => {
+	const handleSongClick = (url, id, name) => {
 		setCurrentSongUrl(url)
 		setSelectedSong(id)
+		setCurrentSongName(name)
 	}
 
 	const handlePrev = () => {
@@ -39,11 +41,12 @@ const Home = () => {
 			const newSong = selectedSong - 1
 			setSelectedSong(newSong)
 			setCurrentSongUrl(listSong[newSong].url)
-			console.log(currentSongUrl)
+			setCurrentSongName(listSong[newSong].name)
 		}else{
 			const newSong = listSong.length - 1
 			setSelectedSong(newSong)
 			setCurrentSongUrl(listSong[newSong].url)
+			setCurrentSongName(listSong[newSong].name)
 		}
 	}
 
@@ -52,10 +55,12 @@ const Home = () => {
 			const newSong = selectedSong + 1
 			setSelectedSong(newSong)
 			setCurrentSongUrl(listSong[newSong].url)
+			setCurrentSongName(listSong[newSong].name)
 		}else {
 			const newSong = 1;
-			setSelectedSong(newSong);
-			setCurrentSongUrl(listSong[newSong].url);
+			setSelectedSong(newSong)
+			setCurrentSongUrl(listSong[newSong].url)
+			setCurrentSongName(listSong[newSong].name)
 		}
 	}
 
@@ -69,7 +74,7 @@ const Home = () => {
 							key={index} 
 							text={item.name} 
 							num={item.id}
-							onClick={() => handleSongClick(item.url, index)}
+							onClick={() => handleSongClick(item.url, index, item.name)}
 							active={selectedSong === index}
 							/>
 						)
@@ -78,6 +83,7 @@ const Home = () => {
 			</main>
 			<footer className="footer">
 				<Player 
+				songName={currentSongName}
 				songUrl={currentSongUrl}
 				onPrev={handlePrev}
 				onNext={handleNext}

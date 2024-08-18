@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward, Volume1, Repeat, Shuffle } from "lucide-react";
 
 
-export function Player({songUrl, onPrev, onNext}) {
+export function Player({songName, songUrl, onPrev, onNext}) {
     const [isPlaying, setIsPlaying] = useState(false)
     const [volume, setVolume] = useState(0.5)
+    const [currentTime, setCurrentTime] = useState(0)
+    const [duration, setDuration] = useState(0)
     const audioRef = useRef()
 
     useEffect(() => {
@@ -21,6 +23,22 @@ export function Player({songUrl, onPrev, onNext}) {
         }
     }, [volume])
 
+    useEffect(() => {
+        if(audioRef.current){
+            const updateProgressBar = () => {
+                setCurrentTime(audioRef.current.currentTime)
+                setDuration(audioRef.current.duration)
+            }
+            audioRef.current.addEventListener('timeupdate', updateProgressBar)
+            audioRef.current.addEventListener('durationchange', updateProgressBar)
+
+            return () => {
+                audioRef.current.removeEventListener('timeupdate', updateProgressBar)
+                audioRef.current.removeEventListener('durationchange', updateProgressBar)
+            }
+        }
+    },[audioRef.current])
+
     const handleClick = () => {
         if(isPlaying) {
             audioRef.current.pause()
@@ -34,26 +52,40 @@ export function Player({songUrl, onPrev, onNext}) {
         setVolume(event.target.value)
     }
 
+    const handleProgresChange = (event) => {
+        const newTime = event.target.value
+        audioRef.current.currentTime = newTime
+        setCurrentTime(newTime)
+    }
+
     return(
         <div className="player">
-            <div>
-                CurrentSong...
+            <div className="song-container">
+                {songName}
             </div>
-            <div className="btn-content">
+            <div className="btn-container">
                 <div className="btn-reproductor">
+                    <button className="btn-random"><Shuffle/></button>
                     <button className="btn-prev" onClick={onPrev}><SkipBack/></button>
                     <button className="btn-player" onClick={handleClick}>
                         {isPlaying ? <Pause/> : <Play/>}
                     </button>
                     <button className="btn-next" onClick={onNext}><SkipForward/></button>
+                    <button className="btn-repeat"><Repeat/></button>
                 </div>
                 <div>
                     <input
+                    className="progress-bar-song"
+                    min={0}
+                    max={duration}
+                    value={currentTime}
+                    onChange={handleProgresChange}
                     type="range"
                     />
                 </div>
             </div>
-            <div>
+            <div className="volume-conteiner">
+                <Volume1/>
                 <input
                 type="range"
                 min={0}
