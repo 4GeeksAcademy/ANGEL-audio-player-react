@@ -7,6 +7,7 @@ export function Player({songName, songUrl, onPrev, onNext}) {
     const [volume, setVolume] = useState(0.5)
     const [currentTime, setCurrentTime] = useState(0)
     const [duration, setDuration] = useState(0)
+    const [isRepeating, setIsRepeating] = useState(false)
     const audioRef = useRef()
 
     useEffect(() => {
@@ -29,15 +30,29 @@ export function Player({songName, songUrl, onPrev, onNext}) {
                 setCurrentTime(audioRef.current.currentTime)
                 setDuration(audioRef.current.duration)
             }
+
+            const handleEnded = () => {
+                if(!isRepeating){
+                    onNext()
+                }
+            }
             audioRef.current.addEventListener('timeupdate', updateProgressBar)
             audioRef.current.addEventListener('durationchange', updateProgressBar)
+            audioRef.current.addEventListener('ended', handleEnded)
 
             return () => {
                 audioRef.current.removeEventListener('timeupdate', updateProgressBar)
                 audioRef.current.removeEventListener('durationchange', updateProgressBar)
+                audioRef.current.removeEventListener('ended', handleEnded)
             }
         }
-    },[audioRef.current])
+    },[audioRef.current, onNext, isRepeating])
+
+    useEffect(() => {
+        if(audioRef.current){
+            audioRef.current.loop = isRepeating
+        }
+    }, [isRepeating])
 
     const handleClick = () => {
         if(isPlaying) {
@@ -58,6 +73,13 @@ export function Player({songName, songUrl, onPrev, onNext}) {
         setCurrentTime(newTime)
     }
 
+    const handleRepeat = () => {
+        setIsRepeating(!isRepeating)
+    }
+    const handleNext = () => {
+        onNext()
+    }
+
     return(
         <div className="player">
             <div className="song-container">
@@ -71,7 +93,12 @@ export function Player({songName, songUrl, onPrev, onNext}) {
                         {isPlaying ? <Pause/> : <Play/>}
                     </button>
                     <button className="btn-next" onClick={onNext}><SkipForward/></button>
-                    <button className="btn-repeat"><Repeat/></button>
+                    <button 
+                    className={`btn-repeat ${isRepeating ? 'active-repeat' : ''}`}
+                    onClick={handleRepeat}
+                    >
+                        <Repeat/>
+                    </button>
                 </div>
                 <div>
                     <input
