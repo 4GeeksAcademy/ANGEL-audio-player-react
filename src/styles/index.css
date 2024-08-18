@@ -28,7 +28,7 @@ body{
     column-gap: 2rem;
     padding: 1rem;
     width: 100%;
-    background-color: black;
+    background-color: #161617;
     color: white;
     border: 1px solid gray;
     cursor: pointer;
@@ -62,12 +62,26 @@ body{
 .btn-reproductor{
     display: flex;
     justify-content: center;
+    column-gap: 2rem;
 }
 .btn-player{
     background-color: white;
     padding: 0.5rem;
     border: none;
     border-radius: 50px;
+}
+
+.btn-prev{
+    border-radius: 50px;
+    border: none;
+    background-color: #2B2B2B;
+    color: white;
+}
+.btn-next{
+    border-radius: 50px;
+    border: none;
+    background-color: #2B2B2B;
+    color: white;
 }
 .active{
     background-color: #504F4F !important;

@@ -34,6 +34,31 @@ const Home = () => {
 		setSelectedSong(id)
 	}
 
+	const handlePrev = () => {
+		if(selectedSong > 0){
+			const newSong = selectedSong - 1
+			setSelectedSong(newSong)
+			setCurrentSongUrl(listSong[newSong].url)
+			console.log(currentSongUrl)
+		}else{
+			const newSong = listSong.length - 1
+			setSelectedSong(newSong)
+			setCurrentSongUrl(listSong[newSong].url)
+		}
+	}
+
+	const handleNext = () => {
+		if(selectedSong < listSong.length-1){
+			const newSong = selectedSong + 1
+			setSelectedSong(newSong)
+			setCurrentSongUrl(listSong[newSong].url)
+		}else {
+			const newSong = 1;
+			setSelectedSong(newSong);
+			setCurrentSongUrl(listSong[newSong].url);
+		}
+	}
+
 	return (
 		<>
 			<main className="main">
@@ -52,7 +77,11 @@ const Home = () => {
 				</ul>
 			</main>
 			<footer className="footer">
-				<Player songUrl={currentSongUrl}/>
+				<Player 
+				songUrl={currentSongUrl}
+				onPrev={handlePrev}
+				onNext={handleNext}
+				/>
 			</footer>
 		</>
 	);

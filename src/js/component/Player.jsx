@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, SkipBack, SkipForward } from "lucide-react";
 
 
-export function Player({songUrl}) {
+export function Player({songUrl, onPrev, onNext}) {
     const [isPlaying, setIsPlaying] = useState(false)
+    const [volume, setVolume] = useState(0.5)
     const audioRef = useRef()
 
     useEffect(() => {
@@ -14,6 +15,12 @@ export function Player({songUrl}) {
         }
     },[songUrl])
 
+    useEffect(() => {
+        if(audioRef.current){
+            audioRef.current.volume = volume
+        }
+    }, [volume])
+
     const handleClick = () => {
         if(isPlaying) {
             audioRef.current.pause()
@@ -23,6 +30,10 @@ export function Player({songUrl}) {
         setIsPlaying(!isPlaying)
     }
 
+    const handleVolumeChange = (event) => {
+        setVolume(event.target.value)
+    }
+
     return(
         <div className="player">
             <div>
@@ -30,13 +41,27 @@ export function Player({songUrl}) {
             </div>
             <div className="btn-content">
                 <div className="btn-reproductor">
+                    <button className="btn-prev" onClick={onPrev}><SkipBack/></button>
                     <button className="btn-player" onClick={handleClick}>
                         {isPlaying ? <Pause/> : <Play/>}
                     </button>
+                    <button className="btn-next" onClick={onNext}><SkipForward/></button>
+                </div>
+                <div>
+                    <input
+                    type="range"
+                    />
                 </div>
             </div>
             <div>
-                Volumen
+                <input
+                type="range"
+                min={0}
+                max={1}
+                step={0.01}
+                value={volume}
+                onChange={handleVolumeChange}
+                />                    
             </div>
 
             <audio ref={audioRef}/>
