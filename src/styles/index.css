@@ -98,6 +98,12 @@ body{
     background-color: #000000;
     color: #b3b3b3;
 }
+.btn-random.active-random{
+    color: #005CC8;
+}
+.btn-random.active-random:hover{
+    color: #005CC8;
+}
 .btn-repeat{
     border: none;
     background-color: #000000;

@@ -10,6 +10,7 @@ const Home = () => {
 	const [currentSongUrl, setCurrentSongUrl] = useState(null)
 	const [currentSongName, setCurrentSongName] = useState(null)
 	const [selectedSong, setSelectedSong] = useState(null)
+	const [isShuffle, setIsShuffle] = useState(false)
 
 	const fetchSongs = async () => {
 		const res = await fetch(`https://playground.4geeks.com/sound/all`, {
@@ -51,17 +52,28 @@ const Home = () => {
 	}
 
 	const handleNext = () => {
-		if(selectedSong < listSong.length-1){
-			const newSong = selectedSong + 1
-			setSelectedSong(newSong)
-			setCurrentSongUrl(listSong[newSong].url)
-			setCurrentSongName(listSong[newSong].name)
-		}else {
-			const newSong = 1;
-			setSelectedSong(newSong)
-			setCurrentSongUrl(listSong[newSong].url)
-			setCurrentSongName(listSong[newSong].name)
+		if(isShuffle){
+			const randomSong = Math.floor(Math.random() * listSong.length)
+			setSelectedSong(randomSong)
+			setCurrentSongUrl(listSong[randomSong].url)
+			setCurrentSongName(listSong[randomSong].name)
+		}else{
+			if(selectedSong < listSong.length-1){
+				const newSong = selectedSong + 1
+				setSelectedSong(newSong)
+				setCurrentSongUrl(listSong[newSong].url)
+				setCurrentSongName(listSong[newSong].name)
+			}else {
+				const newSong = 1;
+				setSelectedSong(newSong)
+				setCurrentSongUrl(listSong[newSong].url)
+				setCurrentSongName(listSong[newSong].name)
+			}
 		}
+	}
+
+	const handleClickShuffle = () => {
+		setIsShuffle(!isShuffle)
 	}
 
 	return (
@@ -87,6 +99,8 @@ const Home = () => {
 				songUrl={currentSongUrl}
 				onPrev={handlePrev}
 				onNext={handleNext}
+				isShuffle={isShuffle}
+				handleClickShuffle={handleClickShuffle}
 				/>
 			</footer>
 		</>

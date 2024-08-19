@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, SkipBack, SkipForward, Volume1, Repeat, Shuffle } from "lucide-react";
 
 
-export function Player({songName, songUrl, onPrev, onNext}) {
+export function Player({songName, songUrl, onPrev, onNext, isShuffle, handleClickShuffle}) {
     const [isPlaying, setIsPlaying] = useState(false)
     const [volume, setVolume] = useState(0.5)
     const [currentTime, setCurrentTime] = useState(0)
@@ -87,7 +87,12 @@ export function Player({songName, songUrl, onPrev, onNext}) {
             </div>
             <div className="btn-container">
                 <div className="btn-reproductor">
-                    <button className="btn-random"><Shuffle/></button>
+                    <button 
+                    className={`btn-random ${isShuffle ? 'active-random' : ''}`}
+                    onClick={handleClickShuffle}
+                    >
+                        <Shuffle/>
+                    </button>
                     <button className="btn-prev" onClick={onPrev}><SkipBack/></button>
                     <button className="btn-player" onClick={handleClick}>
                         {isPlaying ? <Pause/> : <Play/>}
