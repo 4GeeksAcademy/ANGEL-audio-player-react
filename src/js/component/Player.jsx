@@ -34,6 +34,8 @@ export function Player({songName, songUrl, onPrev, onNext, isShuffle, handleClic
             const handleEnded = () => {
                 if(!isRepeating){
                     onNext()
+                }else{
+                    audioRef.current.currentTime = 0
                 }
             }
             audioRef.current.addEventListener('timeupdate', updateProgressBar)
@@ -46,7 +48,7 @@ export function Player({songName, songUrl, onPrev, onNext, isShuffle, handleClic
                 audioRef.current.removeEventListener('ended', handleEnded)
             }
         }
-    },[audioRef.current, onNext, isRepeating])
+    },[onNext, isRepeating])
 
     useEffect(() => {
         if(audioRef.current){
@@ -75,9 +77,6 @@ export function Player({songName, songUrl, onPrev, onNext, isShuffle, handleClic
 
     const handleRepeat = () => {
         setIsRepeating(!isRepeating)
-    }
-    const handleNext = () => {
-        onNext()
     }
 
     return(
